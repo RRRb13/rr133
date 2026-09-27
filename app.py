@@ -18,7 +18,10 @@ def log_and_redirect():
 
 @app.route("/")
 def home():
-    return "ok", 200  # health check do Render
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    ip = ip.split(",")[0].strip() if ip else request.remote_addr
+    print(f"[LOG-ROOT] {datetime.datetime.now().isoformat()} | IP={ip}", flush=True)
+    return "ok", 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
