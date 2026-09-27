@@ -6,16 +6,14 @@ app = Flask(__name__)
 
 @app.route("/r")
 def log_and_redirect():
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-    if ip:
-        ip = ip.split(",")[0].strip()
+    # Render coloca o IP real aqui
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    ip = forwarded.split(",")[0].strip() if forwarded else request.remote_addr
+    
     ua  = request.headers.get("User-Agent", "")
     ts  = datetime.datetime.now().isoformat()
     
-    # Print vai pros logs do Render (persistido no dashboard)
-    print(f"[LOG] {ts} | {ip} | {ua}", flush=True)
-    sys.stdout.flush()
-    
+    print(f"[LOG] {ts} | IP={ip} | UA={ua}", flush=True)
     return redirect("https://youtube.com")
 
 @app.route("/")
